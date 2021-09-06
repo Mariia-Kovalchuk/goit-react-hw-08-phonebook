@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import styles from './Phonebook.module.css';
 
-const Phonebook = ({ children }) => <div className={styles.container}>{children}</div>;
+const Phonebook = ({ children }) => <main className={styles.container}>{children}</main>;
 
 Phonebook.propTypes = {
   children: PropTypes.node,

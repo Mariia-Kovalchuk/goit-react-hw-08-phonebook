@@ -37,7 +37,7 @@ const ContactList = () => {
                         </li>
                     ))}
                 </ul>}
-            {!isLoading && !error && contacts.length === 0 && <p>No match found. Please check your query!</p>}
+            {!isLoading && !error && contacts.length === 0 && <p>No information. Please add a new contact or check your query!</p>}
         </>
     );
 };

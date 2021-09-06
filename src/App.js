@@ -1,65 +1,51 @@
-// import Phonebook from './components/Phonebook';
-// import ContactForm from './components/ContactForm';
-// import ContactList from './components/ContactList';
-// import Filter from './components/Filter';
-
-// function App() {
-//   return (
-//     <Phonebook>
-//       <h1>Phonebook</h1>
-//       <ContactForm />
-//       <h2>Contacts</h2>
-//       <Filter />
-//       <ContactList />
-//     </Phonebook>
-//   );
-// }
-
-import { lazy, Suspense, } from 'react';
-import { Switch, Route } from 'react-router-dom';
-// import Navigation from './components/Navigation';
-import Loader from "react-loader-spinner";
-// import styles from './views/HomeView/HomeView.module.css';
 import AppBar from './components/AppBar/AppBar';
-
+import { lazy, Suspense, useEffect, } from 'react';
+import {useDispatch} from 'react-redux'
+import { Switch,Redirect  } from 'react-router-dom';
+import PrivateRoute from './components/Routes/PrivteRoute.jsx'
+import PublicRoute from './components/Routes/PublicRoute.jsx'
+import Loader from './components/Loader';
+import { AuthorizationOperations, AuthorizationSelectors } from './redux/authorization'
+import { useSelector } from 'react-redux';
 
 
 const RegisterView = lazy(() => import('./views/RegisterView' /* webpackChunkName: "register-view" */));
 const LoginView = lazy(() => import('./views/LoginView' /* webpackChunkName: "login-view" */));
 const ContactsView = lazy(() => import('./views/ContactsView' /* webpackChunkName: "contacts-view" */));
-// const NotFoundView =lazy(()=>import('./views/NotFoundView' /* webpackChunkName: "error404" */))
 
 
 function App() {
+  const dispatch = useDispatch();
+  const isGettingCurrentUser = useSelector(AuthorizationSelectors.isGettingCurrentUser);
+
+  useEffect(() => {
+    dispatch(AuthorizationOperations.getCurrentUser())
+  }, [dispatch]);
+
   return (
-    <div>
+    !isGettingCurrentUser&&<div>
       <AppBar />
 
-      <Suspense fallback={<Loader  type="Circles" color="#3f51b5" height={100} width={100} timeout={5000} />}>
+      <Suspense fallback={<Loader/>}>
         <Switch>
-          <Route path="/register" exact>
+          <PublicRoute path="/register" exact restricted>
             <RegisterView />
-          </Route>
+          </PublicRoute>
 
-          <Route path='/login' exact>
+          <PublicRoute path='/login' exact restricted>
             <LoginView />
-          </Route>
+          </PublicRoute>
 
-          <Route path='/contacts' exact>
+          <PrivateRoute  path='/contacts' exact>
             <ContactsView />
-          </Route>
+          </PrivateRoute>
 
-          {/* <Route >
-            <NotFoundView />
-          </Route>
- */}
+          <Redirect to="/login" />
+
         </Switch>
-
-
 
       </Suspense>
       
-
     </div>
   );
 }

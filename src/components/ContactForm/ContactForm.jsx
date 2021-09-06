@@ -4,7 +4,6 @@ import { phonebookSelectors, phonebookOperations } from '../../redux/Phonebook';
 import style from './ContactForm.module.css'
 
 
-
 function ContactForm() {
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');

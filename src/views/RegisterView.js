@@ -1,16 +1,19 @@
 import { useState } from "react";
+import {  useDispatch, useSelector } from 'react-redux';
+import { AuthorizationOperations, AuthorizationSelectors } from "../redux/authorization";
 import styles from './Views.module.css'
 
 
-export default function LoginView() {
-    const [email, setEmail]= useState('')
-    const [password, setPassword]= useState('')
-    const [name, setName]= useState('')
 
-    const handleSubmit = () => {
-    
-    }
-    
+export default function LoginView() {
+    const [name, setName]= useState('')
+    const [email, setEmail]= useState('')
+    const [password, setPassword] = useState('')
+    const dispatch = useDispatch();
+    const error = useSelector(AuthorizationSelectors.getError);
+
+
+   
     const handleChange = e => {
         const { name, value } = e.currentTarget;
         switch (name) {
@@ -32,12 +35,20 @@ export default function LoginView() {
 
     };
 
+    const handleSubmit = e => {
+        e.preventDefault();
+        const credentials = { name, email, password };
+        dispatch(AuthorizationOperations.signupUser(credentials))
+        setName('')
+        setEmail('')
+        setPassword('')
+    };
+
+
     return (
         <div className={styles.container}>
-            {/* <h1>Register Page</h1> */}
-
-            <form onSubmit={handleSubmit} autoComplete="off">
-                 <label >
+            <form onSubmit={handleSubmit} >
+                <label >
                     Name
                     <input
                         type="name"
@@ -70,6 +81,11 @@ export default function LoginView() {
 
                 <button type="submit" className={styles.button}>Register</button>
             </form>
+            {error &&
+                <>
+                    <p className={styles.error}> {`This email address is already used or 'password' is shorter than the minimum allowed length (7).`} </p>
+                    <p className={styles.error}>Try another</p>
+                </>}
         </div>
     );
 
